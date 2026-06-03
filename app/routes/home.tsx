@@ -39,8 +39,10 @@ export default function Home() {
   }
 
   const workDays = hoursNeeded / 8;
+  const workDaysPerMonth = (workWeek / 8) * (52 / 12);
+  const workDaysPerYear = workDaysPerMonth * 12;
 
-  const formatWorkDays = (d: number) => {
+  const formatNumber = (d: number) => {
     if (d % 1 < 0.05) return Math.round(d).toString();
     return d.toFixed(1);
   };
@@ -96,9 +98,13 @@ export default function Home() {
             </div>
             {hoursNeeded > 0 && (
               <div className="mt-2 text-sm text-gray-500">
-                {workDays >= 1
-                  ? `\u2248 ${formatWorkDays(workDays)} work day${Math.round(workDays) !== 1 ? "s" : ""}`
-                  : "Less than a work day"}
+                {workDays < 1
+                  ? "Less than a work day"
+                  : workDays < workDaysPerMonth
+                    ? `\u2248 ${formatNumber(workDays)} work day${Math.round(workDays) !== 1 ? "s" : ""}`
+                    : workDays < workDaysPerYear
+                      ? `\u2248 ${formatNumber(workDays / workDaysPerMonth)} month${Math.round(workDays / workDaysPerMonth) !== 1 ? "s" : ""}`
+                      : `\u2248 ${formatNumber(workDays / workDaysPerYear)} year${Math.round(workDays / workDaysPerYear) !== 1 ? "s" : ""}`}
               </div>
             )}
           </div>
