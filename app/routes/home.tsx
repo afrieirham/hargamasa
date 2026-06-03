@@ -13,7 +13,7 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const [itemPrice, setItemPrice] = useState("");
-  const [monthlySalary, setMonthlySalary] = useState(5000);
+  const [monthlySalary, setMonthlySalary] = useState("5000");
   const [workWeek, setWorkWeek] = useState(45);
   const [copied, setCopied] = useState(false);
 
@@ -21,14 +21,15 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
     const salary = params.get("salary");
     const week = params.get("week");
-    if (salary) setMonthlySalary(Number(salary));
+    if (salary) setMonthlySalary(salary);
     if (week) setWorkWeek(Number(week));
   }, []);
 
   const monthlyHours = (workWeek * 52) / 12;
 
   const price = parseFloat(itemPrice.replace(/,/g, "")) || 0;
-  const hourlyRate = monthlySalary > 0 ? monthlySalary / monthlyHours : 0;
+  const salaryNum = parseFloat(monthlySalary) || 0;
+  const hourlyRate = salaryNum > 0 ? salaryNum / monthlyHours : 0;
   const hoursNeeded = price > 0 && hourlyRate > 0 ? price / hourlyRate : 0;
 
   let wholeHours = Math.floor(hoursNeeded);
@@ -53,7 +54,7 @@ export default function Home() {
 
   const handleSaveLink = async () => {
     const url = new URL(window.location.href);
-    url.searchParams.set("salary", String(monthlySalary));
+    url.searchParams.set("salary", monthlySalary);
     url.searchParams.set("week", String(workWeek));
     window.history.replaceState(null, "", url.toString());
     await navigator.clipboard.writeText(url.toString());
@@ -110,7 +111,7 @@ export default function Home() {
           </div>
         </div>
 
-        {monthlySalary > 0 && (
+        {salaryNum > 0 && (
           <div className="mt-3 text-center">
             <span className="text-xs text-gray-300">
               Hourly rate: ${hourlyRate.toFixed(2)}
@@ -145,10 +146,11 @@ export default function Home() {
                   $
                 </span>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   value={monthlySalary}
                   onChange={(e) =>
-                    setMonthlySalary(Math.max(0, Number(e.target.value)))
+                    setMonthlySalary(e.target.value.replace(/[^0-9]/g, ""))
                   }
                   className="w-full pl-7 pr-3 py-2 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900/5 focus:border-gray-400 transition-all"
                 />
