@@ -3,7 +3,7 @@ import type { Route } from "./+types/home";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "TimeCost" },
+    { title: "Harga Masa" },
     {
       name: "description",
       content: "See how many hours you need to work to buy something",
@@ -25,13 +25,11 @@ export default function Home() {
     if (week) setWorkWeek(Number(week));
   }, []);
 
-  const monthlyHours = workWeek * 52 / 12;
+  const monthlyHours = (workWeek * 52) / 12;
 
   const price = parseFloat(itemPrice.replace(/,/g, "")) || 0;
-  const hourlyRate =
-    monthlySalary > 0 ? monthlySalary / monthlyHours : 0;
-  const hoursNeeded =
-    price > 0 && hourlyRate > 0 ? price / hourlyRate : 0;
+  const hourlyRate = monthlySalary > 0 ? monthlySalary / monthlyHours : 0;
+  const hoursNeeded = price > 0 && hourlyRate > 0 ? price / hourlyRate : 0;
 
   let wholeHours = Math.floor(hoursNeeded);
   let minutes = Math.round((hoursNeeded - wholeHours) * 60);
@@ -65,7 +63,7 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <div className="max-w-sm mx-auto px-4 py-12">
         <h1 className="text-2xl font-semibold tracking-tight text-gray-900 mb-10">
-          TimeCost
+          Harga Masa
         </h1>
 
         <div className="mb-2">
@@ -88,23 +86,23 @@ export default function Home() {
         </div>
 
         <div className="mt-6 p-6 bg-gray-50 rounded-xl border border-gray-200">
-            <div className="text-center">
-              <div className="text-5xl font-light text-gray-900 tabular-nums">
-                {wholeHours > 0 && `${wholeHours}h`}
-                {wholeHours > 0 && minutes > 0 && " "}
-                {minutes > 0 && `${minutes}m`}
-                {hoursNeeded === 0 && "0m"}
-                {hoursNeeded > 0 && wholeHours === 0 && minutes === 0 && "<1m"}
-              </div>
-              {hoursNeeded > 0 && (
-                <div className="mt-2 text-sm text-gray-500">
-                  {workDays >= 1
-                    ? `\u2248 ${formatWorkDays(workDays)} work day${Math.round(workDays) !== 1 ? "s" : ""}`
-                    : "Less than a work day"}
-                </div>
-              )}
+          <div className="text-center">
+            <div className="text-5xl font-light text-gray-900 tabular-nums">
+              {wholeHours > 0 && `${wholeHours}h`}
+              {wholeHours > 0 && minutes > 0 && " "}
+              {minutes > 0 && `${minutes}m`}
+              {hoursNeeded === 0 && "0m"}
+              {hoursNeeded > 0 && wholeHours === 0 && minutes === 0 && "<1m"}
             </div>
+            {hoursNeeded > 0 && (
+              <div className="mt-2 text-sm text-gray-500">
+                {workDays >= 1
+                  ? `\u2248 ${formatWorkDays(workDays)} work day${Math.round(workDays) !== 1 ? "s" : ""}`
+                  : "Less than a work day"}
+              </div>
+            )}
           </div>
+        </div>
 
         {monthlySalary > 0 && (
           <div className="mt-3 text-center">
